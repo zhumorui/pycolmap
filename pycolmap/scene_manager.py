@@ -8,9 +8,9 @@ import struct
 from collections import OrderedDict
 from itertools import combinations
 
-from camera import Camera
-from image import Image
-from rotation import Quaternion
+from .camera import Camera
+from .image import Image
+from .rotation import Quaternion
 
 #-------------------------------------------------------------------------------
 #
