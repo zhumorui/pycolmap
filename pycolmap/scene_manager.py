@@ -182,30 +182,21 @@ class SceneManager:
         self.images = OrderedDict()
 
         with open(input_file, 'r') as f:
-            is_camera_description_line = False
+            # is_camera_description_line = True
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                line = line.strip()
+                if len(line) > 0 and line[0] != "#":
+                    data = line.split()
 
-            for line in iter(lambda: f.readline().strip(), ''):
-                if not line or line.startswith('#'):
-                    continue
-
-                is_camera_description_line = not is_camera_description_line
-
-                data = line.split()
-
-                if is_camera_description_line:
                     image_id = int(data[0])
                     image = Image(data[-1], int(data[-2]),
-                                  Quaternion(np.array(map(float, data[1:5]))),
-                                  np.array(map(float, data[5:8])))
-                else:
-                    image.points2D = np.array(
-                        [map(float, data[::3]), map(float, data[1::3])]).T
-                    image.point3D_ids = np.array(map(np.uint64, data[2::3]))
-
-                    # automatically remove points without an associated 3D point
-                    #mask = (image.point3D_ids != SceneManager.INVALID_POINT3D)
-                    #image.points2D = image.points2D[mask]
-                    #image.point3D_ids = image.point3D_ids[mask]
+                                  Quaternion(np.array(list(map(float, data[1:5])))),
+                                  np.array(list(map(float, data[5:8]))))
+                    
+                    image.point3D_ids = None
 
                     self.images[image_id] = image
                     self.name_to_image_id[image.name] = image_id
